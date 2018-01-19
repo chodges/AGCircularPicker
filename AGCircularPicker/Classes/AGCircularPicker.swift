@@ -10,6 +10,10 @@ import UIKit
 
 public typealias AGColorValue = (value: Int, color: UIColor)
 
+public func clamp<T>(_ value: T, minValue: T, maxValue: T) -> T where T : Comparable {
+  return min(max(value, minValue), maxValue)
+}
+
 public protocol AGCircularPickerDelegate {
     
     func didChangeValues(_ values: Array<AGColorValue>, selectedIndex: Int)
@@ -34,8 +38,9 @@ open class AGCircularPicker: UIView {
     
     fileprivate let defaultItemSize: CGFloat = 240.0
     fileprivate var currentValues: Array<AGColorValue> = []
-    fileprivate var selectedIndex: Int = 0 {
+		@objc open dynamic var selectedIndex: Int = 0 {
         didSet {
+            selectedIndex = clamp(selectedIndex, minValue: 0, maxValue: (values.count-1))
             collectionLayout.selectedIndex = selectedIndex
             collectionView.scrollToItem(at: IndexPath(item: selectedIndex, section: 0), at: .centeredHorizontally, animated: true)
             delegate?.didChangeValues(currentValues, selectedIndex: selectedIndex)
