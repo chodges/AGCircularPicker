@@ -10,9 +10,22 @@ import UIKit
 
 public typealias AGColorValue = (value: Int, color: UIColor)
 
-public func clamp<T>(_ value: T, minValue: T, maxValue: T) -> T where T : Comparable {
-  return min(max(value, minValue), maxValue)
+protocol ClampableRange {
+  associatedtype Bound : Comparable
+  var upperBound: Bound { get }
+  var lowerBound: Bound { get }
 }
+
+extension ClampableRange {
+  func clamp(_ value: Bound) -> Bound {
+    return min(max(lowerBound, value), upperBound)
+  }
+}
+
+extension Range : ClampableRange {}
+extension ClosedRange : ClampableRange {}
+extension CountableRange : ClampableRange {}
+extension CountableClosedRange : ClampableRange {}
 
 public protocol AGCircularPickerDelegate {
     
@@ -40,7 +53,7 @@ open class AGCircularPicker: UIView {
     fileprivate var currentValues: Array<AGColorValue> = []
 		@objc open dynamic var selectedIndex: Int = 0 {
         didSet {
-            selectedIndex = clamp(selectedIndex, minValue: 0, maxValue: (values.count-1))
+            selectedIndex = (0...values.count).clamp(selectedIndex)
             collectionLayout.selectedIndex = selectedIndex
             collectionView.scrollToItem(at: IndexPath(item: selectedIndex, section: 0), at: .centeredHorizontally, animated: true)
             delegate?.didChangeValues(currentValues, selectedIndex: selectedIndex)
