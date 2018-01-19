@@ -51,7 +51,7 @@ open class AGCircularPicker: UIView {
     
     fileprivate let defaultItemSize: CGFloat = 240.0
     fileprivate var currentValues: Array<AGColorValue> = []
-		@objc open dynamic var selectedIndex: Int = 0 {
+		public var selectedIndex: Int = 0 {
         didSet {
             selectedIndex = (0..<values.count).clamp(selectedIndex)
             collectionLayout.selectedIndex = selectedIndex
