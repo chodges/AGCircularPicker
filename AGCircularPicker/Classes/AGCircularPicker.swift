@@ -53,7 +53,7 @@ open class AGCircularPicker: UIView {
     fileprivate var currentValues: Array<AGColorValue> = []
 		@objc open dynamic var selectedIndex: Int = 0 {
         didSet {
-            selectedIndex = (0...values.count).clamp(selectedIndex)
+            selectedIndex = (0..<values.count).clamp(selectedIndex)
             collectionLayout.selectedIndex = selectedIndex
             collectionView.scrollToItem(at: IndexPath(item: selectedIndex, section: 0), at: .centeredHorizontally, animated: true)
             delegate?.didChangeValues(currentValues, selectedIndex: selectedIndex)
